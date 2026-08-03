@@ -118,9 +118,44 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="header-brand">
-          <h1>{t('app.title')}</h1>
-          <span className="subtitle">{t('app.subtitle')}</span>
+        <div className="header-left">
+          <div className="header-brand">
+            <div className="brand-mark" aria-hidden>
+              <span className="brand-mark-inner" />
+            </div>
+            <div>
+              <h1>{t('app.title')}</h1>
+              <span className="subtitle">{t('app.subtitle')}</span>
+            </div>
+          </div>
+          <div className="view-tabs" role="tablist" aria-label={t('app.viewTabs')}>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={view === 'schematic'}
+              className={`view-tab ${view === 'schematic' ? 'active' : ''}`}
+              onClick={() => setView('schematic')}
+            >
+              {t('app.viewSchematic')}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={view === 'rail'}
+              className={`view-tab ${view === 'rail' ? 'active' : ''}`}
+              onClick={() => setView('rail')}
+            >
+              {t('app.viewRail')}
+            </button>
+            <button
+              type="button"
+              className="view-tab view-tab-standards"
+              onClick={() => setStandardsOpen(true)}
+              title={t('standardsInfo.intro')}
+            >
+              {t('app.viewStandards')}
+            </button>
+          </div>
         </div>
         <input
           className="project-name"
@@ -140,30 +175,6 @@ export default function App() {
           mode={mode}
           onModeChange={(m) => dispatch({ type: 'SET_MODE', mode: m })}
         />
-        <div className="view-tabs">
-          <button
-            type="button"
-            className={`view-tab ${view === 'schematic' ? 'active' : ''}`}
-            onClick={() => setView('schematic')}
-          >
-            {t('app.viewSchematic')}
-          </button>
-          <button
-            type="button"
-            className={`view-tab ${view === 'rail' ? 'active' : ''}`}
-            onClick={() => setView('rail')}
-          >
-            {t('app.viewRail')}
-          </button>
-          <button
-            type="button"
-            className="view-tab view-tab-standards"
-            onClick={() => setStandardsOpen(true)}
-            title={t('standardsInfo.intro')}
-          >
-            {t('app.viewStandards')}
-          </button>
-        </div>
       </header>
 
       <aside className="sidebar">
