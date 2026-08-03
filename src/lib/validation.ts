@@ -10,6 +10,11 @@ import { MODULE_WIDTH_MM } from '../data/wireColors'
 import { hasOverlap, moduleWidthMm } from './geometry'
 import { resolveLoadPhase } from './phaseBalance'
 import { localizedModuleName } from '../i18n/catalog'
+import { STANDARDS } from './standards'
+
+function isRcdCategory(category: ModuleSpec['category']): boolean {
+  return category === 'rcd' || category === 'rcbo'
+}
 
 function getSpec(specId: string): ModuleSpec {
   return MODULE_MAP[specId]
@@ -85,35 +90,86 @@ export function validateProject(
     }
   }
 
-  // ПЗВ заборонено в TN-C
-  if (groundingSystem === 'TN-C') {
-    const rcdModules = modules.filter((m) => {
-      const cat = getSpec(m.specId).category
-      return cat === 'rcd' || cat === 'rcbo'
+  // ДБН В.2.5-23:2025 §5.1 — для житлових будівель TN-S або TN-C-S
+  if (groundingSystem === 'TN-C' && modules.length > 0) {
+    issues.push({
+      id: 'dbn-tn-c-deprecated',
+      severity: 'warning',
+      message: t('validation.tnCDeprecated'),
+      rule: 'dbn-tn-c-deprecated',
     })
-    for (const mod of rcdModules) {
+  }
+
+  // ДБН В.2.5-27 / HD 60364-4-41 — ПЗВ заборонено в TN-C (N і PE не розділені)
+  if (groundingSystem === 'TN-C') {
+    for (const mod of modules) {
+      const spec = getSpec(mod.specId)
+      if (!isRcdCategory(spec.category)) continue
       issues.push({
         id: `tn-c-rcd-${mod.instanceId}`,
         severity: 'error',
         message: t('validation.tnCRcd'),
-        rule: 'pue-tn-c-no-rcd',
+        rule: 'hd60364-tn-c-no-rcd',
         moduleId: mod.instanceId,
       })
     }
   }
 
-  // TT вимагає ПЗВ
+  // HD 60364-4-41 — TT вимагає ПЗВ на вводі
   if (groundingSystem === 'TT') {
-    const hasRcd = modules.some((m) => {
-      const cat = getSpec(m.specId).category
-      return cat === 'rcd' || cat === 'rcbo'
-    })
+    const hasRcd = modules.some((m) => isRcdCategory(getSpec(m.specId).category))
     if (!hasRcd && modules.length > 0) {
       issues.push({
         id: 'tt-requires-rcd',
         severity: 'warning',
         message: t('validation.ttRcd'),
-        rule: 'pue-tt-rcd',
+        rule: 'hd60364-tt-rcd',
+      })
+    }
+  }
+
+  // ДБН В.2.5-23 — рекомендовано ПЗВ для розеточних груп (30 мА)
+  const rcdModules = modules.filter((m) => isRcdCategory(getSpec(m.specId).category))
+  const hasMcbs = modules.some((m) => getSpec(m.specId).category === 'mcb')
+  if (
+    hasMcbs &&
+    rcdModules.length === 0 &&
+    modules.length > 0 &&
+    groundingSystem !== 'TN-C'
+  ) {
+    issues.push({
+      id: 'dbn-rcd-recommended',
+      severity: 'info',
+      message: t('validation.rcdRecommended', { sensitivity: STANDARDS.RCD_SOCKET_SENSITIVITY_MA }),
+      rule: 'dbn-rcd-recommended',
+    })
+  }
+
+  // ДБН В.2.5-23, п. 12.18 — селективність каскадних ПЗВ (IΔn ввідного ≥ 3× групового)
+  const rcdWithSensitivity = rcdModules
+    .map((m) => ({ mod: m, spec: getSpec(m.specId), sensitivity: getSpec(m.specId).sensitivityMa }))
+    .filter((r): r is typeof r & { sensitivity: number } => r.sensitivity != null)
+
+  if (rcdWithSensitivity.length >= 2) {
+    const sensitivities = rcdWithSensitivity.map((r) => r.sensitivity)
+    const minSensitivity = Math.min(...sensitivities)
+    const maxSensitivity = Math.max(...sensitivities)
+
+    if (maxSensitivity < minSensitivity * STANDARDS.RCD_SELECTIVITY_RATIO) {
+      const downstream = rcdWithSensitivity.find((r) => r.sensitivity === minSensitivity)!
+      const upstream = rcdWithSensitivity.find((r) => r.sensitivity === maxSensitivity)!
+      issues.push({
+        id: 'rcd-selectivity',
+        severity: 'warning',
+        message: t('validation.rcdSelectivity', {
+          upstreamName: modName(upstream.spec, t),
+          upstreamMa: upstream.sensitivity,
+          downstreamName: modName(downstream.spec, t),
+          downstreamMa: downstream.sensitivity,
+          ratio: STANDARDS.RCD_SELECTIVITY_RATIO,
+        }),
+        rule: 'dbn-rcd-selectivity',
+        moduleId: downstream.mod.instanceId,
       })
     }
   }

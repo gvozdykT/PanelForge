@@ -9,6 +9,7 @@ import { WireLayer } from './components/editor/WireLayer'
 import { PanelSchemeView } from './components/editor/PanelSchemeView'
 import { ComponentLibrary } from './components/library/ComponentLibrary'
 import { ValidationPanel } from './components/panels/ValidationPanel'
+import { StandardsInfoPanel } from './components/panels/StandardsInfoPanel'
 import { Toolbar } from './components/panels/Toolbar'
 import { PropertiesPanel } from './components/panels/PropertiesPanel'
 import { ModuleSpecModal } from './components/panels/ModuleSpecModal'
@@ -43,6 +44,7 @@ export default function App() {
   const [selectedWireId, setSelectedWireId] = useState<string | null>(null)
   const [modalModuleId, setModalModuleId] = useState<string | null>(null)
   const [view, setView] = useState<'rail' | 'schematic'>('schematic')
+  const [standardsOpen, setStandardsOpen] = useState(false)
   const [exportBusy, setExportBusy] = useState(false)
   const exportRootRef = useRef<HTMLDivElement>(null)
 
@@ -153,6 +155,14 @@ export default function App() {
           >
             {t('app.viewRail')}
           </button>
+          <button
+            type="button"
+            className="view-tab view-tab-standards"
+            onClick={() => setStandardsOpen(true)}
+            title={t('standardsInfo.intro')}
+          >
+            {t('app.viewStandards')}
+          </button>
         </div>
       </header>
 
@@ -229,6 +239,7 @@ export default function App() {
         <ValidationPanel
           issues={issues}
           onSelectModule={(id) => dispatch({ type: 'SELECT', id })}
+          onOpenStandards={() => setStandardsOpen(true)}
         />
 
         <TagsPanel
@@ -374,6 +385,15 @@ export default function App() {
             />
           </ModuleSpecModal>
         )}
+
+        <ModuleSpecModal
+          open={standardsOpen}
+          wide
+          title={t('standardsInfo.title')}
+          onClose={() => setStandardsOpen(false)}
+        >
+          <StandardsInfoPanel />
+        </ModuleSpecModal>
       </main>
     </div>
   )

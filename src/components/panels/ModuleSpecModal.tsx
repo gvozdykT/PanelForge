@@ -4,11 +4,12 @@ import { useI18n } from '../../i18n'
 interface Props {
   open: boolean
   title?: string
+  wide?: boolean
   onClose: () => void
   children: React.ReactNode
 }
 
-export function ModuleSpecModal({ open, title, onClose, children }: Props) {
+export function ModuleSpecModal({ open, title, wide, onClose, children }: Props) {
   const { t } = useI18n()
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function ModuleSpecModal({ open, title, onClose, children }: Props) {
   return (
     <div className="spec-modal-backdrop" onClick={onClose} role="presentation">
       <div
-        className="spec-modal"
+        className={`spec-modal${wide ? ' spec-modal-wide' : ''}`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n'
 interface Props {
   issues: ValidationIssue[]
   onSelectModule?: (moduleId: string) => void
+  onOpenStandards?: () => void
 }
 
 const ICONS: Record<ValidationIssue['severity'], string> = {
@@ -12,7 +13,7 @@ const ICONS: Record<ValidationIssue['severity'], string> = {
   info: 'ℹ️',
 }
 
-export function ValidationPanel({ issues, onSelectModule }: Props) {
+export function ValidationPanel({ issues, onSelectModule, onOpenStandards }: Props) {
   const { t } = useI18n()
   const errors = issues.filter((i) => i.severity === 'error')
   const warnings = issues.filter((i) => i.severity === 'warning')
@@ -25,6 +26,17 @@ export function ValidationPanel({ issues, onSelectModule }: Props) {
         {errors.length > 0 && <span className="badge error">{errors.length}</span>}
         {warnings.length > 0 && <span className="badge warning">{warnings.length}</span>}
       </h3>
+      <p className="validation-standards">
+        {t('validation.subtitle')}
+        {onOpenStandards && (
+          <>
+            {' '}
+            <button type="button" className="validation-standards-link" onClick={onOpenStandards}>
+              {t('standardsInfo.button')} →
+            </button>
+          </>
+        )}
+      </p>
       {issues.length === 0 ? (
         <p className="ok-msg">{t('validation.ok')}</p>
       ) : (

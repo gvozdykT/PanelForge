@@ -92,7 +92,7 @@ Serves the contents of `dist/` locally so you can test the production bundle bef
 3. Move modules by dragging them along the rail.
 4. Switch to **Wiring** mode and connect two terminals of the same type (L, N, PE).
 5. Use **Panel schematic** for a grouped single-line-style view.
-6. Check **Code checks** (validation) in the sidebar.
+6. Check **Code checks** (validation) in the sidebar — click **PUE / standards** for the full reference.
 7. Export via **PNG**, **Export JSON**, or **PDF / Print**.
 
 ### Demo project
@@ -158,7 +158,7 @@ Use the **Language** selector in the header (uk / en / de / pl). The choice is s
 | PNG export (schematic or rail view) | Yes |
 | Print / PDF specification | Yes |
 | PWA (offline, installable) | Yes |
-| Validation (TN-C + RCD, TT, selectivity, phase balance) | Yes |
+| Validation (DBN / HD 60364; PUE-2026 scope noted) | Yes |
 | i18n: uk, en, de, pl | Yes |
 
 ---
@@ -177,9 +177,31 @@ Example with GitHub Pages (project site):
 
 ## Standards referenced
 
-- **Module width:** 18 mm per module (EN 60715)
-- **DIN rail:** top-hat profile 35 × 7.5 mm
-- **Wire colours:** IEC 60446 (L1 brown, L2 black, L3 grey, N blue, PE green-yellow)
+PanelForge targets **residential and small commercial distribution panels**. Validation rules follow building codes and HD 60364, not industrial PUE chapters.
+
+| Standard | Role in PanelForge |
+|----------|-------------------|
+| **ПУЕ-2026** (Ministry of Energy Order **№ 283**, 05.06.2026) | Replaces PUE-2017 № 476. Applies to **industrial and energy-sector** installations. Residential panels are **outside PUE-2026 scope** (see the document introduction). |
+| **ДБН В.2.5-23:2025** | Primary reference for residential/public-building electrical design: TN-S / TN-C-S earthing, RCD for socket circuits, cascaded RCD selectivity (upstream IΔn ≥ 3× downstream). |
+| **ДБН В.2.5-27:2006** | Supplementary rules for protective measures (TN-C + RCD prohibition). |
+| **ДСТУ HD 60364-4-41:2022** | Protection against electric shock (TT earthing + RCD, TN-C restrictions). |
+| **IEC 60446 / HD 308** | Wire colours (L1 brown, L2 black, L3 grey, N blue, PE green-yellow). |
+| **EN 60715** | 18 mm module width, DIN top-hat rail 35 × 7.5 mm. |
+
+### Validation checks
+
+| Check | Severity | Basis |
+|-------|----------|-------|
+| Rail overflow / overlap | Error | Layout |
+| Phase compatibility | Error | Module specs |
+| TN-C deprecated for residential | Warning | ДБН В.2.5-23:2025 §5.1 |
+| RCD/RCBO in TN-C | Error | ДБН В.2.5-27, HD 60364-4-41 |
+| TT without RCD | Warning | HD 60364-4-41 |
+| No RCD with MCBs present | Info | ДБН В.2.5-23 (30 mA recommendation) |
+| Cascaded RCD selectivity | Warning | ДБН В.2.5-23, п. 12.18 (ratio ≥ 3) |
+| MCB selectivity (main ≥ branch) | Warning | Best practice |
+| 3-phase load balance (>30% spread) | Warning | Heuristic |
+| Unconnected terminals | Info | Wiring completeness |
 
 ---
 

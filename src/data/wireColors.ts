@@ -1,6 +1,6 @@
 import type { WireColor } from '../types'
 
-/** IEC 60446 / HD 308 / ПУЕ — стандартні кольори проводів */
+/** IEC 60446 / HD 308 / ДСТУ HD 60364 — стандартні кольори проводів */
 export const WIRE_COLORS: WireColor[] = [
   { role: 'L1', label: 'L1', labelUk: 'Фаза 1', color: '#8B4513' },
   { role: 'L2', label: 'L2', labelUk: 'Фаза 2', color: '#1a1a1a' },

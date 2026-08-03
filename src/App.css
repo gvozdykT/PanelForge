@@ -225,6 +225,106 @@ body {
 .issue-warning { background: #2d2517; color: #f6ad55; }
 .issue-info { background: #1a2332; color: #90cdf4; }
 
+.validation-standards {
+  font-size: 0.72rem;
+  color: #718096;
+  line-height: 1.35;
+  margin: -4px 0 8px;
+}
+
+.validation-standards-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #63b3ed;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.validation-standards-link:hover {
+  color: #90cdf4;
+}
+
+.standards-info {
+  font-size: 0.82rem;
+  color: #cbd5e0;
+  line-height: 1.5;
+}
+
+.standards-intro {
+  margin: 0 0 14px;
+  color: #a0aec0;
+}
+
+.standards-block {
+  margin-bottom: 16px;
+}
+
+.standards-block h4 {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  color: #f6ad55;
+  font-weight: 600;
+}
+
+.standards-block p {
+  margin: 0 0 8px;
+}
+
+.standards-block ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.standards-block li {
+  margin-bottom: 6px;
+}
+
+.standards-note {
+  padding: 8px 10px;
+  border-left: 3px solid #4a5568;
+  background: #1a1d23;
+  border-radius: 0 4px 4px 0;
+  color: #a0aec0;
+}
+
+.standards-highlight {
+  padding: 10px 12px;
+  background: #1a2332;
+  border: 1px solid #2c5282;
+  border-radius: 6px;
+}
+
+.standards-meta {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.standards-meta div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 8px;
+}
+
+.standards-meta dt {
+  margin: 0;
+  color: #718096;
+  font-weight: 500;
+}
+
+.standards-meta dd {
+  margin: 0;
+  color: #e2e8f0;
+}
+
+.standards-checks li,
+.standards-refs li {
+  color: #a0aec0;
+}
+
 .ok-msg {
   font-size: 0.82rem;
   color: #68d391;
@@ -853,6 +953,11 @@ body.is-dragging-module .din-rail {
   animation: spec-modal-in 0.15s ease-out;
 }
 
+.spec-modal-wide {
+  max-width: min(640px, 96vw);
+  max-height: min(90vh, 820px);
+}
+
 @keyframes spec-modal-in {
   from {
     opacity: 0;
@@ -1010,6 +1115,17 @@ body.is-dragging-module .din-rail {
   background: #2d2517;
   border-color: #f6ad55;
   color: #f6ad55;
+}
+
+.view-tab-standards {
+  border-color: #2c5282;
+  color: #90cdf4;
+}
+
+.view-tab-standards:hover {
+  background: #1a2332;
+  border-color: #63b3ed;
+  color: #bee3f8;
 }
 
 .tool-btn.accent {
