@@ -217,4 +217,10 @@ PanelForge targets **residential and small commercial distribution panels**. Val
 
 ## License
 
-MIT (add a `LICENSE` file when you choose a license).
+**MIT License** — see [LICENSE](LICENSE).
+
+PanelForge is **free to use** at the moment: you may run, copy, modify, and share the app (including your own builds and forks) under the MIT terms. Keep the copyright notice when you redistribute source or binaries.
+
+There is no warranty — electrical designs produced with this tool must still be verified by a qualified engineer against applicable standards (DBN, HD 60364, local regulations).
+
+If the license ever changes, it will apply only to releases published after that change; copies obtained under MIT keep their original permissions.
